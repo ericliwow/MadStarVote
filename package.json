@@ -1,0 +1,22 @@
+{
+  "name": "vote_system",
+  "version": "1.0.0",
+  "description": "Chart.js: A JavaScript library for charting https://www.chartjs.org/ Beginner Java Tutorial: https://developer.mozilla.org/en-US/docs/Learn/JavaScript/First_steps/What_is_JavaScript",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ericliwow/MadStarVote.git"
+  },
+  "author": "CUSA",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ericliwow/MadStarVote/issues"
+  },
+  "homepage": "https://github.com/ericliwow/MadStarVote#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
