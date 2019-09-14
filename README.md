@@ -1,21 +1,65 @@
-# Is the Vote Manipulated by Russians?
+# MadStar 现场投票系统
 
-Chart.js: A JavaScript library for charting https://www.chartjs.org/
-Beginner Java Tutorial: https://developer.mozilla.org/en-US/docs/Learn/JavaScript/First_steps/What_is_JavaScript
-
-
-## Plan B: 微信投票/Google Form
-
-### Requirements for Madstar Voting System: 
+## Requirements for Madstar Voting System: 
 * 活动大概有500人到现场
 * 比赛分很多轮进行 所以每次Matchup需要输入新的选手信息到Voting Program里
-* 限制每个人只能投一票
-1. MAC地址
-1. IP地址
-1. Cookies
-* 投票的网页如何发送到每一个人的设备上
-* 门票上印二维码
+* 限制每个人只能投一票: 
+* 投票的网页通过门票二维码交给观众
 * 每个人的二维码不一样来确保只能投票一次
+
+## 教学
+### HTTP Request 参数获取
+https://blog.csdn.net/m0_37068028/article/details/74612765
+
+## 系统状态
+1. 待机 
+2. 采集投票
+3. 显示投票结果
+
+## 接口
+### POST: 创建一个投票 **/createPoll**
+将系统状态从待机切换到采集投票
+参数:
+``` javascript
+{
+ "candidates": ["选手名单"]
+ "duration": Integer // 投票的采集阶段时长 (按秒计算)
+ "maxChoice": Integer // 观众可以最多选择几个选项
+}
+```
+可以在采集阶段重新开始投票，这样就会终止之前的投票
+
+### GET: 开始刚刚创建的投票 **/startPoll**
+有三种情况:
+* 正常开启投票
+* 重复开启投票 (还不清楚需不需要这个功能)
+* 无法开始投票，因为还没有创建任何投票
+
+### GET: 获取后端状态 **/getStatus** 
+
+* 如果 currVote = undefined, 提示 "暂时没有投票" 
+* 如果 currVote.status = ACTIVE_STATUS, 提示"投票还有多久结束以及当前投票"
+* 如果 currVote.status = SLEEP_STATUS, 显示当前票数 (投票刚刚创建的时候，大家都是0票)
+
+### POST: 给选手投票 **/vote**
+投票条件:
+* 当前投票为active
+* 选手存在于当前Vote
+* 观众通过了验证 (暂时先不做，有可能可以直接在前端验证)
+
+
+工作清单:
+- [ ] ```Vote Class``` @完成人名字
+- [ ] ```/vote```
+- [ ] ```/getStatus```
+- [ ] ```/startPoll```
+- [ ] ```/createPoll```
+
+---
+# 讨论草稿分割线
+
+
+
 
 ## 投票有哪些选项 可以一次投几个选手
 
@@ -61,3 +105,5 @@ Optional: 实时显示投票结果 (长连接)
 管理员界面看起来是什么样?
 
 多个设备同时访问服务器---> @Galvin
+
+## Plan B: 微信投票/Google Form
