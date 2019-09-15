@@ -11,17 +11,17 @@ const DEFAULT_DURATION = 60;
 const DEFAULT_MAX_CHOICE = 1;
 class Vote {
    /* 我现在想到可能用得上的variable */
-   candidates = [];
-   duration = DEFAULT_DURATION;
-   maxChoice = DEFAULT_MAX_CHOICE;
-   status = SLEEP_STATUS;
+   // candidates = [];
+    duration = DEFAULT_DURATION;
+   // maxChoice = DEFAULT_MAX_CHOICE;
+    status = SLEEP_STATUS;
    // Javascript Object
    // 样例: voteCnt[candidates[i]]++
-   voteCnt = {};
+   //voteCnt = {};
 
-   
+
    /**
-    * 
+    *
     * @param {*} candidates ["选手名单"]
     * @param {*} duration 投票的采集阶段时长 (按秒计算)
     * @param {*} maxChoice 观众可以最多选择几个选项
@@ -30,12 +30,16 @@ class Vote {
 
    }
 
-   /** 
+   /**
     * 默认创建投票时，状态应该为sleep
-    * 转换投票状态 (sleep <-> active) 
+    * 转换投票状态 (sleep <-> active)
     */
    toggleStatus() {
-
+     if(this.status === 1){
+       this.status = 0;
+     }else if(this.status === 0){
+       this.status = 1;
+     }
    }
 
    /**
@@ -51,12 +55,28 @@ class Vote {
     * 时间到了以后自动切换状态
     */
    beginCountDown() {
+     //const now = new Date.getTime();
+     //const endpoint = now + durtion;
+     var timer = duration;
+     var minutes = parseInt(timer / 60, 10);
+     var seconds = parseInt(timer % 60, 10);
 
+     minutes = minutes < 10 ? "0" + minutes : minutes;
+     seconds = seconds < 10 ? "0" + seconds : seconds;
+
+    // display.textContent = minutes + ":" + seconds;
+    console.log(minutes + ":" + seconds);
+
+     //end timeout
+     if (timer < 0) {
+           toggleStatus();
+       }
    }
 
    /* 把所有 Vote 的变量都打印出来方便debug */
    toString() {
-
+     console.log(this.status);
+     console.log(voteCnt);
    }
  }
 
@@ -88,7 +108,7 @@ app.get('/vote', function(req, res){
 })
 
 // 返回当前系统状态
-// 如果 currVote = undefined, 提示 "暂时没有投票" 
+// 如果 currVote = undefined, 提示 "暂时没有投票"
 // 如果 currVote.status = ACTIVE_STATUS, 提示"投票还有多久结束以及当前投票"
 // 如果 currVote.status = SLEEP_STATUS, 显示当前票数 (投票刚刚创建的时候，大家都是0票)
 app.post('/getStatus', function(req, res){
