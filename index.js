@@ -11,13 +11,13 @@ const DEFAULT_DURATION = 60;
 const DEFAULT_MAX_CHOICE = 1;
 class Vote {
    /* 我现在想到可能用得上的variable */
-   candidates = [];
-   duration = DEFAULT_DURATION;
-   maxChoice = DEFAULT_MAX_CHOICE;
-   status = SLEEP_STATUS;
-   // Javascript Object
-   // 样例: voteCnt[candidates[i]]++
-   voteCnt = {};
+   // candidates = [];
+   // duration = DEFAULT_DURATION;
+   // maxChoice = DEFAULT_MAX_CHOICE;
+   // status = SLEEP_STATUS;
+   // // Javascript Object
+   // // 样例: voteCnt[candidates[i]]++
+   // voteCnt = {};
 
    
    /**
@@ -27,7 +27,22 @@ class Vote {
     * @param {*} maxChoice 观众可以最多选择几个选项
     */
    constructor(candidates, duration=DEFAULT_DURATION, maxChoice=DEFAULT_MAX_CHOICE) {
-
+      if(!Array.isArray(candidates))
+         candidates=null;
+      else if(isNaN(duration))
+         duration=null;
+      else if(Math.sign(maxChoice)!=1)
+         maxChoice=null;
+      else{
+      this.candidates = candidates;
+      this.duration = duration;
+      this.maxChoice = maxChoice;
+      this.status=SLEEP_STATUS;
+      for(var i=0;i<candidates.length;i++){
+         this.voteCnt[candidates[i]] = 0;
+      }
+      
+      }
    }
 
    /** 
@@ -43,8 +58,11 @@ class Vote {
     * 应该只在状态是active的时候收集投票
     */
 
-   collectTicket() {
-
+   collectTicket(choices) {
+      if(this.status.equals(ACTIVE_STATUS)&&choices.length<=this.maxChoice){
+         for(var i=0;i<choices.length;i++)
+            voteCnt[choices[i]]++;
+      }
    }
    /**
     * 当投票被激活后,利用 setTimeout 函数开始倒计时
