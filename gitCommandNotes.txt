@@ -1,1 +1,0 @@
-git init: Initializing a directory to be the new repository!
