@@ -1,5 +1,6 @@
 var express = require('express');
 var bodyParser = require('body-parser')
+var fs = require('fs');
 var app = express();
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: false}))
@@ -10,15 +11,6 @@ const SLEEP_STATUS = 1;
 const DEFAULT_DURATION = 60;
 const DEFAULT_MAX_CHOICE = 1;
 class Vote {
-   /* 我现在想到可能用得上的variable */
-   // candidates = [];
-   // duration = DEFAULT_DURATION;
-   // maxChoice = DEFAULT_MAX_CHOICE;
-   // status = SLEEP_STATUS;
-   // // Javascript Object
-   // // 样例: voteCnt[candidates[i]]++
-   // voteCnt = {};
-
    /**
     *
     * @param {*} candidates ["选手名单"]
@@ -26,21 +18,28 @@ class Vote {
     * @param {*} maxChoice 观众可以最多选择几个选项
     */
    constructor(candidates, duration=DEFAULT_DURATION, maxChoice=DEFAULT_MAX_CHOICE) {
-      if(!Array.isArray(candidates))
+      candidates = JSON.parse(candidates);
+      if(!Array.isArray(candidates)){
          candidates=null;
-      else if(isNaN(duration))
-         duration=null;
-      else if(Math.sign(maxChoice)!=1)
-         maxChoice=null;
-      else{
-      this.candidates = candidates;
-      this.duration = duration;
-      this.maxChoice = maxChoice;
-      this.status=SLEEP_STATUS;
-      for(var i=0;i<candidates.length;i++){
-         this.voteCnt[candidates[i]] = 0;
+         throw "选手名单不是数组";
       }
-      
+      else if(isNaN(duration)){
+         duration=null;
+         throw "投票持续时间不是数字";
+      }
+      else if(Math.sign(maxChoice)!=1){
+         maxChoice=null;
+         throw "最大选择数量不是正整数";
+      }
+      else{
+         this.candidates = candidates;
+         this.duration = duration;
+         this.maxChoice = maxChoice;
+         this.status=SLEEP_STATUS;
+         this.voteCnt = {};
+         for(var i=0;i<candidates.length;i++){
+            this.voteCnt[candidates[i]] = 0;
+         }
       }
    }
 
@@ -49,10 +48,10 @@ class Vote {
     * 转换投票状态 (sleep <-> active)
     */
    toggleStatus() {
-     if(this.status === 1){
-       this.status = 0;
-     }else if(this.status === 0){
-       this.status = 1;
+     if(this.status === ACTIVE_STATUS){
+       this.status = SLEEP_STATUS;
+     }else if(this.status === SLEEP_STATUS){
+       this.status = ACTIVE_STATUS;
      }
    }
 
@@ -62,9 +61,13 @@ class Vote {
     */
 
    collectTicket(choices) {
-      if(this.status.equals(ACTIVE_STATUS)&&choices.length<=this.maxChoice){
-         for(var i=0;i<choices.length;i++)
-            voteCnt[choices[i]]++;
+      console.log(`choices: ${choices}`);
+      if(this.status == ACTIVE_STATUS && choices.length<=this.maxChoice){
+         for(var i=0;i<choices.length;i++){
+            this.voteCnt[choices[i]]++;
+         }
+      }else{
+         throw `${JSON.stringify(choices)}  投票无效`;
       }
    }
    /**
@@ -72,64 +75,113 @@ class Vote {
     * 时间到了以后自动切换状态
     */
    beginCountDown() {
-     //const now = new Date.getTime();
-     //const endpoint = now + durtion;
-     var timer = duration;
-     var minutes = parseInt(timer / 60, 10);
-     var seconds = parseInt(timer % 60, 10);
-
-     minutes = minutes < 10 ? "0" + minutes : minutes;
-     seconds = seconds < 10 ? "0" + seconds : seconds;
-
-    // display.textContent = minutes + ":" + seconds;
-    console.log(minutes + ":" + seconds);
-
-     //end timeout
-     if (timer < 0) {
-           toggleStatus();
-       }
+      if (this.status === ACTIVE_STATUS){
+         // 如果已经开始了
+         // 那么不做任何事情
+         // 如果需要重启投票
+         // 应该创建新的 Vote Object
+         throw "已经开启过该投票了"
+      }
+      // 激活投票系统
+      this.toggleStatus();
+      // 纪录投票开始的时间点
+      this.startTime = new Date();
+      // 在规定时间后，重新进入睡眠状态
+      setTimeout(this.toggleStatus, this.duration * 1000);
+      // 计算投票结束时间
+      var endTime = new Date(this.startTime);
+      endTime.setSeconds(this.startTime.getSeconds() + this.duration)
+      this.endTime = endTime
    }
 
    /* 把所有 Vote 的变量都打印出来方便debug */
    toString() {
-     console.log(this.status);
-     console.log(voteCnt);
+      console.log(`状态: ${this.status}`)
+      console.log('-----------------------------')
+      console.log(`投票数量: \n${this.voteCnt}`)
+      console.log('-----------------------------')
+      console.log(`投票开始时间: ${this.startTime}`)
+      console.log('-----------------------------')
+      console.log(`投票持续时间: ${this.duration}`)
+      console.log('-----------------------------')
+      console.log(`理论投票结束时间: ${this.endTime}`)
    }
  }
 
 
 // 全局变量: 用于储存当前的投票
-currVote  = new Vote();
-console.log(currVote.candidates);
-// TODO: 删掉这段教学代码
+currVote  = undefined;
+var page = undefined;
+
+page = fs.readFileSync('index.html').toString();
 app.get('/', function(req, res){
-   res.send("Hello world!");
+  res.send(page);
 });
 
 // 创建一个投票, 保存或者覆盖到 currVote
 app.post('/createPoll', function(req,res){
    var params = req.body
    console.log(JSON.stringify(params))
-   // TODO: 检查格式 + 创建 Vote Object
-   res.send("Success")
+   // TODO: 检查格式 + 创建 Vote Objec
+   var response;
+   try{
+      currVote = new Vote(params.candidates, params.duration, params.maxChoice)
+      response = "Success!";
+   }catch(msg){
+      currVote = null;
+      console.error("错误原因: " + msg);
+      response = "ERROR: " + msg;
+   }
+   res.send(response);
 })
 
 // 利用 toggleStatus 激活当前的投票
 app.get('/startPoll', function(req, res){
-
+   if(!currVote){
+      res.send("尚未创建任何投票!");
+      return;
+   }
+   var response;
+   try{
+      currVote.beginCountDown();
+      response = `SUCCESS: ${currVote.endTime}`;
+   }catch(msg){
+      response = "ERROR: " + msg;
+   }
+   res.send(response);
 })
 
 // 利用 collectTicket() 收集投票
-app.get('/vote', function(req, res){
-
+app.post('/vote', function(req, res){
+   var params = req.body;
+   console.log("params");
+   console.log(params);
+   console.log(JSON.parse(params.candidates))
+   var response;
+   try{
+      currVote.collectTicket(JSON.parse(params.candidates));
+      response = "SUCCESS";
+   }catch(msg){
+      response = "ERROR: " + msg;
+   }
+   res.send(response);
 })
 
 // 返回当前系统状态
 // 如果 currVote = undefined, 提示 "暂时没有投票"
 // 如果 currVote.status = ACTIVE_STATUS, 提示"投票还有多久结束以及当前投票"
 // 如果 currVote.status = SLEEP_STATUS, 显示当前票数 (投票刚刚创建的时候，大家都是0票)
-app.post('/getStatus', function(req, res){
-
+app.get('/getStatus', function(req, res){
+   if (!currVote){
+      res.send("暂时没有创建任何投票");
+   }else{
+      var response = {
+         voteCnt: currVote.voteCnt,
+         endTime: currVote.endTime,
+      };
+      response.onGoing = (currVote.status == ACTIVE_STATUS);
+      res.send(response);
+   }
 })
 
 app.listen(3000);
