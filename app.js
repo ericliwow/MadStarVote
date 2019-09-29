@@ -113,8 +113,9 @@ class Vote {
 currVote  = undefined;
 var page = undefined;
 
-page = fs.readFileSync('index.html').toString();
+
 app.get('/', function(req, res){
+  page = fs.readFileSync('index.html').toString();
   res.send(page);
 });
 
@@ -184,6 +185,6 @@ app.get('/getStatus', function(req, res){
    }
 })
 
-app.use('/assets',express.static('image'));
+app.use('/assets',express.static('assets'));
 
-app.listen(80);
+app.listen(3000);

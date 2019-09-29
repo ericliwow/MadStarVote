@@ -5,60 +5,39 @@
 <!DOCTYPE html>
 <html>
     <head>
-          
-        <!-- <script src="MadStarVote.js"></script> -->
-        <!-- <title>Mad Star Voting Test Page</title> -->
-         <!-- <link rel="stylesheet" href="MadStarVote.css"> -->
-        <meta charset="utf-8"/>
-        <title> JavaScript- forms</title>
-        <link rel="stylesheet" href="MadStarVote.css"/>  
-        <script type="text/javascript">
-         
-        function write_name(){
-            var welcome_parra= document.getElementById('welcome');
-            var name=document.getElementById('name');
-
-            welcome_parra.innerHTML = "welcome "+ name.value;
-        }
-    
-    </script>
-
+        <script src="MadStarVote.js"></script>
+        <title>Mad Star Voting Test Page</title>
+        <link rel="stylesheet" href="assets/MadStarVote.css">
     </head>
-    <div class="bg" style="z-index: 0;"></div>
     <body>
-        <p id="welcome"></p>
         <div style="z-index: 1; display: fixed;">
         <div id="Buttons">
-        <div style="margin-top: 100px; display: absolute; font-size: 80px; margin-left:50%; transform: translateX(-50%);">MadStar 选手 </div>
-        <form>
-            what is your name:<input type="text" id="name"/><br/>
-            <input type="button" value="done" onclick="write_name();"/>
-        </form>
-        <button  onclick="voteSuccess()" class="button" type="button">投出一票</button>
-        <button onclick="voteSuccess()" class="button" type="button">再等一等</button>
+        <div style="margin-top: 100px; display: absolute; font-size: 140px; margin-left:50%; transform: translateX(-50%);">MadStar</div>
+        <button onclick="vote(0)" class="button" type="button">投红方选手</button>
+        <button onclick="vote(1)" class="button" type="button">投蓝方选手</button>
+        <div style="font-size:200px; z-index:100">
+            <form method="POST" action="/vote" >
+                <input id="val" type="text" name="candidates" value='' placeholder="ABC">
+                <input id="submit" type="submit" value="Submit">
+            </form>
+        </div>
+
         </div>
         </div>
-   
-   
-       
-    
-        <!-- <div id="voteResults"> -->
-        <!-- <table id="voteResults">
-            <tr>
-                <th>Singer 1</th>
-                <th>Singer 2</th>
-                <th>Singer 3</th>
-            </tr>
-            <tr>
-                <td>Singer 1 Votes</td>
-                <td>Singer 2 Votes</td>
-                <td>Singer 3 Votes</td>
-            </tr>
-        </table> -->
-
-        <!-- </div> -->
-        
-        <!-- A table that shows the voting results -->
-
     </body>
+    <script>
+        const candidates = ["A", "B"];
+
+        function getCandidateNames(){
+            // 返回该轮投票的选手名字
+            return null;
+        }
+
+        function vote(id){
+            // 将选手名字以数组形式填入 <input id="val">
+            // 提交表单
+            document.getElementById("val").setAttribute("value", `["${candidates[id]}"]`);
+            document.getElementById("submit").click();
+        }
+    </script>
 </html>
