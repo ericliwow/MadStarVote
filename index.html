@@ -9,17 +9,18 @@
         <title>Mad Star Voting Test Page</title>
         <link rel="stylesheet" href="MadStarVote.css">
     </head>
-
+    <div class="bg" style="z-index: 0;"></div>
     <body>
+        <div style="z-index: 1; display: fixed;">
         <div id="Buttons">
-        <h1>SomeoneWasHere</h1>
-        <p>Here we go!</p>
-        <button onclick="voteSuccess()" class="button" type="button">Click me!</button>
-        <button onclick="voteSuccess()" class="button" type="button">Don't click me!</button>
+        <div style="margin-top: 100px; display: absolute; font-size: 80px; margin-left:50%; transform: translateX(-50%);">MadStar 选手</div>
+        <button  onclick="voteSuccess()" class="button" type="button">投出一票</button>
+        <button onclick="voteSuccess()" class="button" type="button">再等一等</button>
+        </div>
         </div>
 
-        <div id="voteResults">
-        <table id="voteResults">
+        <!-- <div id="voteResults"> -->
+        <!-- <table id="voteResults">
             <tr>
                 <th>Singer 1</th>
                 <th>Singer 2</th>
@@ -30,9 +31,9 @@
                 <td>Singer 2 Votes</td>
                 <td>Singer 3 Votes</td>
             </tr>
-        </table>
+        </table> -->
 
-        </div>
+        <!-- </div> -->
         
         <!-- A table that shows the voting results -->
 
