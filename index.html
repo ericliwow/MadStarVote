@@ -5,20 +5,43 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <script src="MadStarVote.js"></script>
-        <title>Mad Star Voting Test Page</title>
-        <link rel="stylesheet" href="MadStarVote.css">
+          
+        <!-- <script src="MadStarVote.js"></script> -->
+        <!-- <title>Mad Star Voting Test Page</title> -->
+         <!-- <link rel="stylesheet" href="MadStarVote.css"> -->
+        <meta charset="utf-8"/>
+        <title> JavaScript- forms</title>
+        <link rel="stylesheet" href="MadStarVote.css"/>  
+        <script type="text/javascript">
+         
+        function write_name(){
+            var welcome_parra= document.getElementById('welcome');
+            var name=document.getElementById('name');
+
+            welcome_parra.innerHTML = "welcome "+ name.value;
+        }
+    
+    </script>
+
     </head>
     <div class="bg" style="z-index: 0;"></div>
     <body>
+        <p id="welcome"></p>
         <div style="z-index: 1; display: fixed;">
         <div id="Buttons">
-        <div style="margin-top: 100px; display: absolute; font-size: 80px; margin-left:50%; transform: translateX(-50%);">MadStar 选手</div>
+        <div style="margin-top: 100px; display: absolute; font-size: 80px; margin-left:50%; transform: translateX(-50%);">MadStar 选手 </div>
+        <form>
+            what is your name:<input type="text" id="name"/><br/>
+            <input type="button" value="done" onclick="write_name();"/>
+        </form>
         <button  onclick="voteSuccess()" class="button" type="button">投出一票</button>
         <button onclick="voteSuccess()" class="button" type="button">再等一等</button>
         </div>
         </div>
-
+   
+   
+       
+    
         <!-- <div id="voteResults"> -->
         <!-- <table id="voteResults">
             <tr>

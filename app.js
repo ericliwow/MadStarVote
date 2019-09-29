@@ -184,4 +184,6 @@ app.get('/getStatus', function(req, res){
    }
 })
 
+app.use('/assets',express.static('image'));
+
 app.listen(80);
