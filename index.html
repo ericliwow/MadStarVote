@@ -1,20 +1,40 @@
+<!-- 
+    HTML做几个按钮，然后把按钮链道几个预留的空的JS函数
+    做一个显示投票结果的表格
+-->
 <!DOCTYPE html>
 <html>
-<head>
-<title>Page Title</title>
-<style type="text/css">
-html *
-{
-   font-size: 50px !important;
-   color: #000 !important;
-   font-family: Arial !important;
-}
-</style>
-</head>
-<body>
-<form action="/vote" method="POST" enctype="application/x-www-form-urlencoded">
-    <input type="text" name="candidates" value='["A"]'/>
-    <input type="submit" value="Submit" />
-</form>
-</body>
+    <head>
+        <script src="MadStarVote.js"></script>
+        <title>Mad Star Voting Test Page</title>
+        <link rel="stylesheet" href="MadStarVote.css">
+    </head>
+
+    <body>
+        <div id="Buttons">
+        <h1>SomeoneWasHere</h1>
+        <p>Here we go!</p>
+        <button onclick="voteSuccess()" class="button" type="button">Click me!</button>
+        <button onclick="voteSuccess()" class="button" type="button">Don't click me!</button>
+        </div>
+
+        <div id="voteResults">
+        <table id="voteResults">
+            <tr>
+                <th>Singer 1</th>
+                <th>Singer 2</th>
+                <th>Singer 3</th>
+            </tr>
+            <tr>
+                <td>Singer 1 Votes</td>
+                <td>Singer 2 Votes</td>
+                <td>Singer 3 Votes</td>
+            </tr>
+        </table>
+
+        </div>
+        
+        <!-- A table that shows the voting results -->
+
+    </body>
 </html>
