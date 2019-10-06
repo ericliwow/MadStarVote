@@ -20,7 +20,7 @@ body, html {
     background-size: cover;
   }
 .button {
-    /* background-color: red; */
+    background-color: red;
     outline:none;
     border-radius: 30px;
     border: none;
@@ -37,7 +37,7 @@ body, html {
 }
 
 .button:active {
-    /* background-color: blueviolet; */
+    background-color: blueviolet;
     /* background-color: red; */
     border-radius: 30px;
     border: none;

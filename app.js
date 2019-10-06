@@ -1,9 +1,16 @@
 var express = require('express');
-var bodyParser = require('body-parser')
+var bodyParser = require('body-parser');
 var fs = require('fs');
 var app = express();
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({extended: false}))
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: false}));
+
+// 使用ejs来传递
+app.set('view engine', 'ejs');
+
+// css文件可被ejs文件访问
+app.use(express.static('assets'));
+
 
 // 投票状态常量
 const ACTIVE_STATUS = 0;
@@ -54,6 +61,7 @@ class Vote {
        this.status = ACTIVE_STATUS;
      }
    }
+
 
    /**
     * 收集一枚观众的投票
@@ -115,8 +123,13 @@ var page = undefined;
 
 
 app.get('/', function(req, res){
-  page = fs.readFileSync('index.html').toString();
-  res.send(page);
+  //page = fs.readFileSync('index.html').toString();
+   if (currVote !== undefined)
+      res.render('index', {vote: currVote.candidates});
+   else
+      res.render('index', {vote: ["投票尚未开始", "苟利国家"]});
+  // res.send(page);
+
 });
 
 // 创建一个投票, 保存或者覆盖到 currVote
