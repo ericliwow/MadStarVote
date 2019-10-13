@@ -1,0 +1,47 @@
+<!--
+    HTML做几个按钮，然后把按钮链道几个预留的空的JS函数
+    做一个显示投票结果的表格
+-->
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="MadStarVote.js"></script>
+    <title>Mad Star Voting Test Page</title>
+    <link rel="stylesheet" href="MadStarVote.css">
+</head>
+<body>
+<div style="z-index: 1; display: fixed;">
+    <div id="Buttons">
+        <p><%= vote %></p>
+        <div style="margin-top: 100px; display: absolute; font-size: 140px; margin-left:50%; transform: translateX(-50%);">MadStar</div>
+        <button onclick="vote(0)" class="button" type="button">投红方选手</button>
+        <button onclick="vote(1)" class="button" type="button">投蓝方选手</button>
+        <div style="font-size:200px; z-index:100">
+            <form method="POST" action="/vote" >
+                <input id="val" type="text" name="candidates" value='' placeholder="ABC">
+                <input id="submit" type="submit" value="Submit">
+            </form>
+        </div>
+
+    </div>
+</div>
+</body>
+<script>
+  var candidates = [];
+
+  function getCandidateNames() {
+      <% vote.forEach(function(vt){ %>
+      candidates.push("<%- vt %>")
+      <% }); %>
+  }
+
+  getCandidateNames();
+
+  function vote(id){
+    // 将选手名字以数组形式填入 <input id="val">
+    // 提交表单
+    document.getElementById("val").setAttribute("value", `["${candidates[id]}"]`);
+    document.getElementById("submit").click();
+  }
+</script>
+</html>
